@@ -16,12 +16,12 @@ export const initialData = {
   skills: {
     title: "Key Skills",
     items: [
-      "Strategic Planning", "Project Management", "Problem Solving", "Cross-functional Leadership", 
+      "Strategic Planning", "Project Management", "Problem Solving", "Cross-functional Leadership",
       "Technical Analysis", "Design Thinking", "Client Relations", "Data-Driven Decisions"
     ]
   },
   projects: {
-    title: "Selected Work",
+    title: "Works",
     items: [
       {
         id: 1,

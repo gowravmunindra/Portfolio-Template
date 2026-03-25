@@ -25,8 +25,12 @@ export const exportPortfolio = async (data, themeChoice) => {
 
   const renderSectionMap = {
     hero: () => `
-    <section class="hero-section min-h-screen flex items-center pt-24 pb-12 relative" id="hero">
-      <div class="max-w-7xl mx-auto px-6 sm:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+    <section class="hero-section min-h-screen flex items-center pt-24 pb-12 relative overflow-hidden" id="hero">
+      <div class="absolute top-1/4 left-10 w-24 h-24 bg-blue-500/20 rounded-full blur-3xl -z-10 animate-pulse"></div>
+      <div class="absolute top-1/3 right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl -z-10 animate-pulse delay-700"></div>
+      <div class="absolute top-32 left-1/4 text-indigo-400/30 animate-pulse text-4xl">&#10022;</div>
+      <div class="absolute bottom-32 right-1/4 text-teal-400/30 animate-pulse delay-500 text-3xl">&#10022;</div>
+      <div class="max-w-[1400px] mx-auto px-6 sm:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
         <div class="flex flex-col text-center lg:text-left">
           ${data.hero.greeting ? `
           <div class="inline-flex items-center justify-center lg:justify-start gap-2 px-4 py-2 rounded-full glass-card w-fit mx-auto lg:mx-0 mb-8 border-indigo-500/20">
@@ -56,7 +60,7 @@ export const exportPortfolio = async (data, themeChoice) => {
         <div class="flex justify-center relative lg:justify-end">
           <div class="relative w-full max-w-[480px] aspect-square group">
             <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-[3rem] blur-3xl opacity-20 dark:opacity-40 -z-10 animate-pulse"></div>
-            <div class="w-full h-full rounded-[3rem] p-2 bg-gradient-to-br from-white/40 to-white/10 dark:from-white/10 dark:to-white/5 border border-white/40 dark:border-white/10 shadow-2xl relative transform transition-transform duration-700 hover:rotate-2">
+            <div class="w-full h-full hero-img-glow relative group">
               <div class="w-full h-full rounded-[calc(3rem-8px)] overflow-hidden relative">
                 <img src="${data.hero.profileImage}" alt="Profile" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
               </div>
@@ -66,8 +70,8 @@ export const exportPortfolio = async (data, themeChoice) => {
       </div>
     </section>`,
     about: () => `
-    <section class="py-24 scroll-mt-24 section" id="about">
-      <div class="max-w-5xl mx-auto px-6 sm:px-12">
+    <section class="py-32 scroll-mt-24 section relative" id="about">
+      <div class="max-w-[1200px] mx-auto px-6 sm:px-12">
         <div class="glass-card rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
           <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none -z-10"></div>
           ${data.about.title ? `<h3 class="text-2xl font-bold mb-8 tracking-[0.2em] uppercase text-indigo-500">${data.about.title}</h3>` : ''}
@@ -76,8 +80,9 @@ export const exportPortfolio = async (data, themeChoice) => {
       </div>
     </section>`,
     skills: () => `
-    <section class="py-24 scroll-mt-24 section" id="skills">
-      <div class="max-w-7xl mx-auto px-6 sm:px-12">
+    <section class="py-24 scroll-mt-24 section relative" id="skills">
+      <div class="absolute top-1/2 right-10 w-48 h-48 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+      <div class="max-w-[1400px] mx-auto px-6 sm:px-12 relative">
         <div class="text-center mb-20">
           <h3 class="text-5xl md:text-6xl font-black mb-6 text-slate-900 dark:text-white tracking-tight">${data.skills.title}</h3>
           <p class="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">Technologies, frameworks, and tools I master to build exceptional digital experiences.</p>
@@ -88,8 +93,9 @@ export const exportPortfolio = async (data, themeChoice) => {
       </div>
     </section>`,
     projects: () => `
-    <section class="py-24 scroll-mt-24 section" id="projects">
-      <div class="max-w-7xl mx-auto px-6 sm:px-12">
+    <section class="py-24 scroll-mt-24 section relative" id="projects">
+      <div class="absolute top-1/2 left-0 w-64 h-64 bg-teal-500/10 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+      <div class="max-w-[1400px] mx-auto px-6 sm:px-12 relative">
         <div class="text-center mb-20">
           <h3 class="text-5xl md:text-6xl font-black mb-6 text-slate-900 dark:text-white tracking-tight">${data.projects.title}</h3>
           <p class="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">A curated selection of my most recent and impactful work.</p>
@@ -111,16 +117,17 @@ export const exportPortfolio = async (data, themeChoice) => {
       </div>
     </section>`,
     experience: () => `
-    <section class="py-24 scroll-mt-24 section" id="experience">
-      <div class="max-w-5xl mx-auto px-6 sm:px-12">
+    <section class="py-24 scroll-mt-24 section relative" id="experience">
+      <div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-indigo-500/5 to-transparent pointer-events-none -z-10"></div>
+      <div class="max-w-[1200px] mx-auto px-6 sm:px-12 relative">
         <div class="text-center mb-20">
           <h3 class="text-5xl md:text-6xl font-black mb-6 text-slate-900 dark:text-white tracking-tight">${data.experience.title}</h3>
           <p class="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">My professional trajectory and leadership roles.</p>
         </div>
-        <div class="flex flex-col gap-8 relative before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-gradient-to-b before:from-indigo-500 before:to-purple-500 md:before:left-12 before:rounded-full">
+        <div class="flex flex-col gap-8 relative before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-gradient-to-b before:from-indigo-500 before:to-purple-500 md:before:left-[8.5rem] lg:before:left-[10.5rem] before:rounded-full">
           ${data.experience.items.map(exp => `
-            <div class="glass-card p-8 md:p-12 rounded-[2.5rem] relative ml-8 md:ml-32 lg:hover:translate-x-4 transition-all">
-              <div class="absolute top-1/2 -translate-y-1/2 -left-[2.4rem] md:-left-[5.4rem] w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-900 border-4 border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)] z-10 transition-transform duration-300 hover:scale-125"></div>
+            <div class="glass-card p-8 md:p-12 rounded-[2.5rem] relative ml-8 md:ml-[11rem] lg:ml-[14rem] lg:hover:translate-x-4 transition-all">
+              <div class="absolute top-1/2 -translate-y-1/2 -left-[2.4rem] md:-left-[2.9rem] lg:-left-[3.9rem] w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-900 border-4 border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)] z-10 transition-transform duration-300 hover:scale-125"></div>
               <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div class="space-y-2">
                   <h4 class="text-3xl font-black text-slate-900 dark:text-white">${exp.title}</h4>
@@ -141,8 +148,9 @@ export const exportPortfolio = async (data, themeChoice) => {
       </div>
     </section>`,
     achievements: () => `
-    <section class="py-24 scroll-mt-24 section" id="achievements">
-      <div class="max-w-7xl mx-auto px-6 sm:px-12">
+    <section class="py-24 scroll-mt-24 section relative" id="achievements">
+      <div class="absolute top-1/2 left-10 w-48 h-48 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+      <div class="max-w-[1400px] mx-auto px-6 sm:px-12 relative">
         <div class="text-center mb-20">
           <h3 class="text-5xl md:text-6xl font-black mb-6 text-slate-900 dark:text-white tracking-tight">${data.achievements.title}</h3>
           <p class="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">A record of continuous growth, awards, and certifications.</p>
@@ -174,8 +182,9 @@ export const exportPortfolio = async (data, themeChoice) => {
       ].filter(social => data.contact[social.id]);
 
       return `
-      <section class="py-24 scroll-mt-24 section" id="contact">
-          <div class="max-w-7xl mx-auto px-6 sm:px-12">
+      <section class="py-32 scroll-mt-24 section relative" id="contact">
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent to-indigo-500/5 dark:to-indigo-500/10 pointer-events-none -z-10"></div>
+          <div class="max-w-[1400px] mx-auto px-6 sm:px-12">
               <div class="text-center mb-20">
                 <h3 class="text-5xl md:text-6xl font-black mb-6 text-slate-900 dark:text-white tracking-tight">${data.contact.title}</h3>
                 <p class="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">Ready to create something magnificent? Send me a message.</p>
@@ -202,7 +211,7 @@ export const exportPortfolio = async (data, themeChoice) => {
     .join('\n');
 
   const navbarContent = `
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/60 dark:bg-[#050505]/60 backdrop-blur-2xl border-b border-slate-200/50 dark:border-white/5 transition-colors duration-500">
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-glass">
       <div class="max-w-7xl mx-auto flex items-center justify-between px-6 sm:px-12 py-5">
         <div class="text-2xl font-black font-outfit text-slate-900 dark:text-white tracking-tighter">
           ${data.hero.name} <span class="text-gradient">${data.hero.lastName}</span>
@@ -210,17 +219,29 @@ export const exportPortfolio = async (data, themeChoice) => {
         <div class="hidden lg:flex items-center gap-8 text-sm font-bold tracking-wider uppercase font-outfit">
           ${data.layout.filter(l => l.visible).map(l => `<a href="#${l.id}" data-target="${l.id}" class="nav-link py-2 relative text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors before:absolute before:bottom-0 before:left-0 before:h-[3px] before:rounded-t-full before:bg-indigo-500 before:transition-all before:duration-300 before:w-0 hover:before:w-1/2">${data[l.id]?.title?.toUpperCase() || (l.id.startsWith('custom_') ? 'SECTION' : l.id.toUpperCase())}</a>`).join('\n')}
           ${data.layout.find(l => l.id === 'contact' && l.visible) ? `
-          <a href="#contact" class="ml-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-7 py-3 rounded-full hover:scale-105 transition-all shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+          <button onclick="document.getElementById('hireMeModal').classList.remove('hidden')" class="ml-4 btn-primary px-7 py-3 rounded-full font-bold tracking-wider uppercase text-sm font-outfit cursor-pointer">
             HIRE ME
-          </a>` : ''}
+          </button>` : ''}
         </div>
       </div>
     </nav>
   `;
 
   const bgHTML = themeChoice === 'dark' 
-  ? '<div class="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-950/30 via-[#050505] to-[#050505] -z-20"></div>'
-  : '<div class="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-100/50 via-slate-50 to-slate-50 -z-20"></div>';
+  ? `
+      <div class="fixed inset-0 bg-[#050505] -z-30 transition-colors duration-1000"></div>
+      <div class="fixed inset-0 overflow-hidden pointer-events-none -z-20 transition-opacity duration-1000 text-white">
+        <div class="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+        <div class="absolute left-0 right-0 top-[-10%] m-auto h-[400px] w-[600px] rounded-full bg-indigo-500/20 blur-[120px]"></div>
+      </div>
+  `
+  : `
+      <div class="fixed inset-0 bg-[#fafafa] -z-30 transition-colors duration-1000"></div>
+      <div class="fixed inset-0 overflow-hidden pointer-events-none -z-20 transition-opacity duration-1000 text-slate-900">
+        <div class="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+        <div class="absolute left-0 right-0 top-0 m-auto h-[500px] w-[800px] rounded-full bg-indigo-500/10 blur-[100px] translate-y-[-200px]"></div>
+      </div>
+  `;
 
   const htmlContent = `<!DOCTYPE html>
 <html lang="en" class="${themeChoice}">
@@ -235,33 +256,62 @@ export const exportPortfolio = async (data, themeChoice) => {
         --font-outfit: "Outfit", sans-serif;
         --font-inter: "Inter", sans-serif;
       }
+
+
       @custom-variant dark (&:is(.dark *));
       
       @layer base {
         html { scroll-behavior: smooth; }
         body {
-          @apply antialiased overflow-x-hidden font-inter transition-colors duration-500 bg-slate-50 text-slate-900;
+          @apply antialiased overflow-x-hidden font-inter transition-all duration-700 bg-slate-50 text-slate-800 selection:bg-indigo-500/30;
         }
         .dark body {
-          @apply bg-[#050505] text-slate-300;
+          @apply bg-[#030712] text-slate-200 selection:bg-indigo-500/50;
         }
         h1, h2, h3, h4, h5, h6 { @apply font-outfit tracking-tight; }
       }
       
       @layer utilities {
         .text-gradient {
-          @apply bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent inline-block;
+          @apply bg-gradient-to-r from-blue-600 via-indigo-600 to-teal-500 bg-clip-text text-transparent inline-block transition-all duration-500;
+        }
+        .dark .text-gradient {
+          @apply from-cyan-400 via-blue-500 to-purple-500;
         }
         .glass-card {
-          @apply bg-white/70 dark:bg-white/5 backdrop-blur-2xl border border-white/40 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] transition-all duration-300;
+          @apply bg-white border border-slate-200 shadow-sm transition-all duration-500 rounded-3xl relative overflow-hidden;
         }
         .glass-card:hover {
-          @apply border-white/80 dark:border-white/20 shadow-[0_8px_40px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_40px_rgb(0,0,0,0.5)];
+          @apply border-indigo-400 shadow-xl shadow-indigo-500/10 -translate-y-1;
+        }
+        .dark .glass-card {
+          @apply bg-[#080808] border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-all duration-500;
+        }
+        .dark .glass-card:hover {
+          @apply border-white/20 bg-[#0f0f0f] shadow-[0_0_30px_rgba(255,255,255,0.03)] -translate-y-1;
+        }
+        .btn-primary {
+          @apply bg-slate-900 text-white shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+        }
+        .dark .btn-primary {
+          @apply bg-white text-slate-900 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] hover:scale-105;
+        }
+        .nav-glass {
+          @apply bg-white/80 backdrop-blur-xl border-b border-slate-200/80 shadow-sm transition-all duration-500;
+        }
+        .dark .nav-glass {
+          @apply bg-[#050505]/80 backdrop-blur-xl border-b border-white/5 shadow-md;
+        }
+        .hero-img-glow {
+          @apply rounded-[2.5rem] p-1.5 bg-gradient-to-br from-slate-200 to-slate-100 border border-white shadow-xl transform transition-all duration-700 hover:rotate-1 hover:scale-105;
+        }
+        .dark .hero-img-glow {
+          @apply from-indigo-500/20 to-transparent border-white/10 shadow-[0_0_40px_rgba(79,70,229,0.1)] hover:shadow-[0_0_60px_rgba(79,70,229,0.2)] bg-[#111];
         }
       }
       
       .active {
-        @apply text-slate-900 dark:text-white;
+        @apply text-slate-800 dark:text-white;
       }
       .active::before {
         @apply w-full;
@@ -272,6 +322,38 @@ export const exportPortfolio = async (data, themeChoice) => {
     ${bgHTML}
     ${navbarContent}
     ${dynamicSections}
+    ${data.layout.find(l => l.id === 'contact' && l.visible) ? `
+    <div id="hireMeModal" class="hidden fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xl z-[999] flex items-center justify-center" style="animation: fadeIn 0.3s ease;" onclick="this.classList.add('hidden')">
+      <div class="bg-white dark:bg-[#080808] border border-slate-200 dark:border-white/10 rounded-[3rem] p-8 md:p-12 w-[95%] max-w-4xl relative text-center shadow-[0_0_100px_rgba(0,0,0,0.5)] max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <button class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 p-3 rounded-full cursor-pointer" onclick="document.getElementById('hireMeModal').classList.add('hidden')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <h3 class="text-3xl md:text-4xl font-black font-outfit text-slate-900 dark:text-white mb-4 tracking-tight">Let's Work Together</h3>
+        <p class="text-lg text-slate-500 dark:text-slate-400 mb-10 font-medium">Reach out via any of the platforms below.</p>
+        
+        <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+          ${[
+            { id: 'email', pre: 'mailto:', label: 'Email', icon: '&#9993;' },
+            { id: 'phone', pre: 'tel:', label: 'Phone', icon: '&#9742;' },
+            { id: 'linkedin', pre: 'https://linkedin.com/in/', label: 'LinkedIn', icon: 'in' },
+            { id: 'github', pre: 'https://github.com/', label: 'GitHub', icon: '&lt;/&gt;' },
+            { id: 'twitter', pre: 'https://twitter.com/', label: 'Twitter', icon: 'tw' }
+          ].filter(social => data.contact[social.id]).map(social => `
+            <a href="${social.id === 'email' ? `mailto:${data.contact.email}` : social.id === 'phone' ? `tel:${data.contact.phone}` : ensureProtocol(data.contact[social.id].includes('http') ? data.contact[social.id] : `${social.pre}${data.contact[social.id]}`)}" target="_blank" rel="noreferrer" class="glass-card p-6 md:p-8 rounded-[2rem] flex flex-col items-center justify-center text-center gap-4 group hover:-translate-y-2 hover:border-indigo-500/50 transition-all flex-grow basis-[180px] max-w-[240px]">
+              <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-indigo-500 group-hover:text-white transition-all shadow-inner text-xl font-bold">
+                ${social.icon}
+              </div>
+              <div class="flex flex-col gap-1 w-full">
+                <span class="text-[10px] md:text-xs font-black tracking-widest text-slate-400 uppercase">${social.label}</span>
+                <span class="font-bold text-sm md:text-base text-slate-900 dark:text-white group-hover:text-indigo-500 truncate w-full block">
+                  ${social.id === 'email' || social.id === 'phone' ? data.contact[social.id] : (data.contact[social.id].includes('http') ? 'Profile' : `@${data.contact[social.id].replace(/^@/, '')}`)}
+                </span>
+              </div>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+    </div>` : ''}
     <script src="script.js"></script>
 </body>
 </html>`;
