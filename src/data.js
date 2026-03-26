@@ -27,13 +27,19 @@ export const initialData = {
         id: 1,
         title: "Digital Transformation Initiative",
         description: "Led a cross-functional team to overhaul internal legacy systems, increasing overall operational efficiency by 40% within 6 months.",
-        link: "https://example.com/project1"
+        link: "https://example.com/project1",
+        codeLink: "https://github.com/alexstark/digital-transform",
+        imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?fit=crop&w=800&q=80",
+        videoUrl: ""
       },
       {
         id: 2,
         title: "Brand Strategy overhaul",
         description: "Developed and executed a comprehensive brand identity system and launch campaign for a disruptive emerging startup.",
-        link: "https://example.com/project2"
+        link: "https://example.com/project2",
+        codeLink: "https://github.com/alexstark/brand-strategy",
+        imageUrl: "https://images.unsplash.com/photo-1551434678-e076c223a692?fit=crop&w=800&q=80",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
       }
     ]
   },

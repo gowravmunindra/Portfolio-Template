@@ -5,7 +5,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { 
   Download, Edit2, Check, ExternalLink, Plus, Trash2, 
   Github, Linkedin, Mail, Twitter, GripVertical, Eye, EyeOff, Upload,
-  Sun, Moon, X, ChevronRight, Sparkles, Phone, PlusSquare
+  Sun, Moon, X, ChevronRight, Sparkles, Phone, PlusSquare, ArrowRight, Layout
 } from 'lucide-react';
 
 const ensureProtocol = (url) => {
@@ -15,7 +15,7 @@ const ensureProtocol = (url) => {
 };
 
 const InputField = ({ value, onChange, isTextArea = false, className = '', placeholder = '' }) => {
-  const baseClasses = "bg-black/5 dark:bg-white/5 border border-dashed border-indigo-500 rounded-xl p-3 outline-none focus:bg-black/10 dark:focus:bg-white/10 transition-colors w-full font-inter";
+  const baseClasses = "bg-white/5 dark:bg-white/5 border border-dashed border-indigo-400/50 rounded-xl p-3 outline-none focus:bg-white/10 dark:focus:bg-white/10 transition-all w-full font-inter placeholder-gray-400";
   if (isTextArea) {
     return (
       <textarea
@@ -49,13 +49,13 @@ function App() {
   const [exportThemeChoice, setExportThemeChoice] = useState('dark');
   const [showHireMeModal, setShowHireMeModal] = useState(false);
 
-  // Bulletproof Theme Toggle
+  // Theme Sync
   useEffect(() => {
     if (theme === 'dark') document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');
   }, [theme]);
 
-  // Handle Scroll Spy
+  // Handle Scroll Spy and Animations
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -64,11 +64,11 @@ function App() {
           entry.target.classList.add('opacity-100', 'translate-y-0');
         }
       });
-    }, { threshold: 0.25 });
+    }, { threshold: 0.2 });
 
     const sections = document.querySelectorAll('section, .hero-section');
     sections.forEach(sec => {
-      sec.classList.add('transition-all', 'duration-1000', 'ease-out', 'opacity-0', 'translate-y-12');
+      sec.classList.add('transition-all', 'duration-700', 'ease-out', 'opacity-0', 'translate-y-8');
       observer.observe(sec);
     });
 
@@ -104,6 +104,15 @@ function App() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => { handleChange('hero', 'profileImage', reader.result); };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleProjectImageUpload = (e, index) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => { handleArrayChange('projects', index, 'imageUrl', reader.result); };
       reader.readAsDataURL(file);
     }
   };
@@ -149,156 +158,157 @@ function App() {
     setShowExportModal(false);
   };
 
-  // Sections Renderers
+  // Section Header Component
   const SectionHeader = ({ sectionObj, sectionKey, desc }) => (
-    <div className="text-center mb-20">
-      {!isEditing ? (
-        <h3 className="text-5xl md:text-6xl font-black mb-6 text-slate-900 dark:text-white tracking-tight">{sectionObj.title}</h3>
+    <div className="max-w-4xl mx-auto text-center mb-16 px-4">
+      {isEditing ? (
+        <InputField 
+          value={sectionObj.title} 
+          onChange={(v) => handleChange(sectionKey, 'title', v)} 
+          className="text-4xl font-extrabold text-center mb-4 bg-transparent border-none focus:ring-0 placeholder:opacity-50" 
+          placeholder="Section Title"
+        />
       ) : (
-        <InputField value={sectionObj.title} onChange={(v) => handleChange(sectionKey, 'title', v)} className="text-3xl font-black text-center max-w-md mx-auto mb-6" />
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
+          {sectionObj.title}
+        </h2>
       )}
-      {desc && <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">{desc}</p>}
+      {desc && <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">{desc}</p>}
+      <div className="mt-4 w-24 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full opacity-50"></div>
     </div>
   );
 
   const renderHero = () => (
-    <section className="hero-section min-h-screen flex items-center pt-24 pb-12 relative overflow-hidden" id="hero">
-      {/* Decorative Floating Elements */}
-      <div className="absolute top-1/4 left-10 w-24 h-24 bg-blue-500/20 rounded-full blur-3xl -z-10 animate-pulse"></div>
-      <div className="absolute top-1/3 right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl -z-10 animate-pulse delay-700"></div>
-      <Sparkles className="absolute top-32 left-1/4 text-indigo-400/30 animate-pulse" size={40} />
-      <Sparkles className="absolute bottom-32 right-1/4 text-teal-400/30 animate-pulse delay-500" size={32} />
+    <section className="hero-section min-h-screen flex items-center pt-32 pb-20 relative overflow-hidden" id="hero">
+      {/* Background Gradients */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px] -z-10 animate-pulse"></div>
+      <div className="absolute bottom-[10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[120px] -z-10 animate-pulse delay-1000"></div>
 
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center relative z-10">
-        <div className="flex flex-col text-center lg:text-left">
+      <div className="max-w-7xl mx-auto px-6 sm:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+        <div className="text-center lg:text-left">
           {(!isEditing && !data.hero.greeting) ? null : isEditing ? (
-            <InputField value={data.hero.greeting} onChange={(v) => handleChange('hero', 'greeting', v)} className="mb-8 max-w-sm" placeholder="e.g. HELLO THERE" />
+            <InputField value={data.hero.greeting} onChange={(v) => handleChange('hero', 'greeting', v)} className="mb-6 max-w-sm mx-auto lg:mx-0" placeholder="e.g. HELLO THERE" />
           ) : (
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card w-fit mx-auto lg:mx-0 mb-8 border-indigo-500/20">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-8 backdrop-blur-sm">
               <Sparkles size={16} className="text-indigo-500" />
-              <p className="text-sm font-semibold tracking-widest uppercase text-slate-700 dark:text-slate-300">
+              <span className="text-xs font-bold tracking-[0.2em] uppercase text-indigo-600 dark:text-indigo-400">
                 {data.hero.greeting}
-              </p>
+              </span>
             </div>
           )}
 
           {!isEditing ? (
-            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black tracking-tighter mb-6 text-slate-900 dark:text-white leading-[1.1]">
-              I'm <span className="text-gradient block mt-2">{data.hero.name} {data.hero.lastName}</span>
+            <h1 className="text-5xl sm:text-7xl xl:text-8xl font-black mb-8 leading-[1.1] tracking-tight text-gray-900 dark:text-white">
+              I'm <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent block mt-4">{data.hero.name} {data.hero.lastName}</span>
             </h1>
           ) : (
-            <div className="flex flex-wrap gap-4 mb-8">
-              <span className="text-6xl font-black text-slate-900 dark:text-white">I'm </span>
-              <InputField value={data.hero.name} onChange={(v) => handleChange('hero', 'name', v)} className="w-full text-4xl font-bold" />
-              <InputField value={data.hero.lastName} onChange={(v) => handleChange('hero', 'lastName', v)} className="w-full text-4xl font-bold" />
+            <div className="flex flex-col gap-4 mb-8">
+              <h1 className="text-4xl font-black text-gray-900 dark:text-gray-400">I'm</h1>
+              <InputField value={data.hero.name} onChange={(v) => handleChange('hero', 'name', v)} className="text-4xl md:text-6xl font-black" placeholder="First Name" />
+              <InputField value={data.hero.lastName} onChange={(v) => handleChange('hero', 'lastName', v)} className="text-4xl md:text-6xl font-black" placeholder="Last Name" />
             </div>
           )}
 
           {(!isEditing && !data.hero.role) ? null : isEditing ? (
-            <div className="flex flex-col gap-3 max-w-lg mb-12 w-full mx-auto lg:mx-0">
-              <InputField value={data.hero.rolePrefix} onChange={(v) => handleChange('hero', 'rolePrefix', v)} placeholder="e.g. A" />
-              <InputField value={data.hero.role} onChange={(v) => handleChange('hero', 'role', v)} className="text-indigo-500" placeholder="e.g. Full Stack Developer" />
-              <InputField value={data.hero.roleSuffix} onChange={(v) => handleChange('hero', 'roleSuffix', v)} placeholder="e.g. & UI/UX Designer" />
+            <div className="space-y-3 max-w-lg mb-12">
+              <InputField value={data.hero.rolePrefix} onChange={(v) => handleChange('hero', 'rolePrefix', v)} placeholder="Role Prefix (e.g. I am a)" />
+              <InputField value={data.hero.role} onChange={(v) => handleChange('hero', 'role', v)} className="text-indigo-500 font-bold" placeholder="Primary Role" />
+              <InputField value={data.hero.roleSuffix} onChange={(v) => handleChange('hero', 'roleSuffix', v)} placeholder="Role Suffix" />
             </div>
           ) : (
-            <h2 className="text-2xl sm:text-3xl font-medium leading-relaxed mb-12 text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0">
-              {data.hero.rolePrefix} <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{data.hero.role}</span> {data.hero.roleSuffix}
-            </h2>
+            <p className="text-xl md:text-2xl font-medium text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              {data.hero.rolePrefix} <span className="text-gray-900 dark:text-white font-bold">{data.hero.role}</span> {data.hero.roleSuffix}
+            </p>
           )}
 
-          <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-5">
             {data.layout.find(l => l.id === 'projects' && l.visible) && (
-              <button className="btn-primary px-8 py-4 rounded-full font-bold flex items-center justify-center gap-3" onClick={() => document.getElementById('projects')?.scrollIntoView({behavior: 'smooth'})}>
-                View My Work <ChevronRight size={18} className="transition-transform group-hover:translate-x-1" />
+              <button 
+                onClick={() => document.getElementById('projects')?.scrollIntoView({behavior: 'smooth'})}
+                className="group bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 transition-all duration-300 hover:scale-105 shadow-xl shadow-indigo-600/20"
+              >
+                View My Projects <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </button>
             )}
             {data.layout.find(l => l.id === 'contact' && l.visible) && (
-              <button className="glass-card px-8 py-4 rounded-full font-bold text-slate-900 dark:text-white flex items-center justify-center gap-3 transition-all duration-300 hover:scale-105 hover:border-indigo-500/50" onClick={() => document.getElementById('contact')?.scrollIntoView({behavior: 'smooth'})}>
-                Contact Me <Mail size={18} />
+              <button 
+                onClick={() => document.getElementById('contact')?.scrollIntoView({behavior: 'smooth'})}
+                className="bg-white/10 dark:bg-white/5 hover:bg-white/20 dark:hover:bg-white/10 border border-gray-200 dark:border-gray-700 backdrop-blur-md px-8 py-4 rounded-2xl font-bold text-gray-900 dark:text-white transition-all duration-300 hover:scale-105"
+              >
+                Get in Touch
               </button>
             )}
           </div>
         </div>
         
-        <div className="flex justify-center relative lg:justify-end">
-          <div className="relative w-full max-w-[480px] aspect-square">
-            <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-[3rem] blur-3xl opacity-20 dark:opacity-40 -z-10 animate-pulse"></div>
-            <div className="w-full h-full hero-img-glow relative group">
-              <div className="w-full h-full rounded-[calc(3rem-8px)] overflow-hidden relative">
-                <img src={data.hero.profileImage} alt="Profile" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                {isEditing && (
-                  <div className="absolute inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <label className="bg-white/10 border border-white/20 text-white px-8 py-4 rounded-2xl flex flex-col items-center gap-3 cursor-pointer font-bold hover:bg-white/20 transition-all hover:scale-105">
-                      <Upload size={28} />
-                      <span>Upload Photo</span>
-                      <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                    </label>
-                  </div>
-                )}
-              </div>
-            </div>
+        <div className="relative group mx-auto lg:ml-auto">
+          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-[2.5rem] blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+          <div className="relative aspect-square w-full max-w-[450px] rounded-[2.5rem] overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-2xl transition hover:rotate-1">
+            <img 
+              src={data.hero.profileImage} 
+              alt="Profile" 
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+            {isEditing && (
+              <label className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                <Upload size={32} className="text-white mb-2" />
+                <span className="text-white font-bold">Change Image</span>
+                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              </label>
+            )}
           </div>
-        </div>
-      </div>
-    </section>
-  );
-
-  const renderCustom = (item) => (
-    <section className="py-24 scroll-mt-24" id={item.id} key={item.id}>
-      <div className="max-w-5xl mx-auto px-6 sm:px-12">
-        <div className="glass-card rounded-[3rem] p-12 md:p-20 relative overflow-hidden transition-all duration-300">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full point-events-none -z-10"></div>
-          {isEditing ? (
-            <div className="flex flex-col gap-6 w-full">
-              <InputField value={data[item.id].title} onChange={(v) => handleChange(item.id, 'title', v)} className="text-3xl font-black text-slate-900 dark:text-white bg-transparent border-b-2" placeholder="Custom Section Header" />
-              <InputField value={data[item.id].content} onChange={(v) => handleChange(item.id, 'content', v)} isTextArea className="text-xl" placeholder="Write anything you want here..." />
-            </div>
-          ) : (
-            <div className="flex flex-col text-center">
-              {data[item.id].title && <h3 className="text-4xl md:text-5xl font-black mb-8 tracking-tight text-slate-900 dark:text-white">{data[item.id].title}</h3>}
-              <p className="text-xl font-medium text-slate-600 dark:text-slate-300 leading-relaxed mx-auto max-w-4xl whitespace-pre-wrap">{data[item.id].content}</p>
-            </div>
-          )}
         </div>
       </div>
     </section>
   );
 
   const renderAbout = () => (
-    <section className="py-32 scroll-mt-24 relative" id="about">
-      <div className="max-w-[1200px] mx-auto px-6 sm:px-12">
-        <div className="glass-card rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-indigo-500/20 blur-[100px] rounded-full point-events-none -z-10"></div>
-          {!isEditing ? (
-            data.about.title && <h3 className="text-2xl font-bold mb-8 tracking-[0.2em] uppercase text-indigo-500">{data.about.title}</h3>
-          ) : (
-            <InputField value={data.about.title} onChange={(v) => handleChange('about', 'title', v)} className="text-xl font-bold text-center max-w-sm mx-auto mb-8 text-indigo-500" placeholder="Optional Pre-title" />
-          )}
-          {!isEditing ? (
-            <p className="text-3xl md:text-5xl font-medium text-slate-800 dark:text-slate-200 leading-[1.4] tracking-tight">"{data.about.bio}"</p>
-          ) : (
-            <InputField value={data.about.bio} onChange={(v) => handleChange('about', 'bio', v)} isTextArea className="w-full text-2xl font-medium text-center" placeholder="Write your massive quote or bio here" />
-          )}
+    <section className="py-24 scroll-mt-24" id="about">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+        <div className="relative group">
+          <div className="absolute -inset-px bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl blur-[2px] opacity-20 group-hover:opacity-40 transition duration-500"></div>
+          <div className="relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-3xl p-10 md:p-16 border border-gray-200/50 dark:border-gray-700/50 shadow-xl overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-5">
+              <Sparkles size={120} className="text-indigo-500" />
+            </div>
+            
+            <div className="relative z-10 text-center max-w-4xl mx-auto">
+              {isEditing ? (
+                <div className="space-y-6">
+                  <InputField value={data.about.title} onChange={(v) => handleChange('about', 'title', v)} className="text-xl font-bold text-center text-indigo-500 uppercase tracking-widest" placeholder="Section Subtitle" />
+                  <InputField value={data.about.bio} onChange={(v) => handleChange('about', 'bio', v)} isTextArea className="text-3xl text-center leading-relaxed font-medium" placeholder="Write your professional bio..." />
+                </div>
+              ) : (
+                <>
+                  <span className="text-xs font-black tracking-[0.3em] uppercase text-indigo-500 inline-block mb-6">{data.about.title || 'About Me'}</span>
+                  <p className="text-2xl md:text-4xl text-gray-800 dark:text-gray-200 font-medium leading-[1.6] tracking-tight">
+                    "{data.about.bio}"
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 
   const renderSkills = () => (
-    <section className="py-24 scroll-mt-24 relative" id="skills">
-      <div className="absolute top-1/2 right-10 w-48 h-48 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-12 relative">
-        <SectionHeader sectionObj={data.skills} sectionKey="skills" desc="Technologies, frameworks, and tools I master to build exceptional digital experiences." />
+    <section className="py-24 scroll-mt-24" id="skills">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <SectionHeader sectionObj={data.skills} sectionKey="skills" desc="A curated list of my specialized skills and technology stack." />
         {isEditing ? (
-          <div className="max-w-4xl mx-auto glass-card p-10 rounded-3xl">
-            <label className="block text-sm font-bold text-slate-500 dark:text-slate-400 mb-4 uppercase tracking-widest">Comma separated skills</label>
-            <textarea className="bg-black/5 dark:bg-white/5 border border-dashed border-indigo-500/50 rounded-xl p-6 w-full min-h-[150px] outline-none text-xl font-medium text-slate-900 dark:text-white focus:border-indigo-500 transition-colors" value={data.skills.items.join(', ')} onChange={handleSkillsChange} />
+          <div className="max-w-3xl mx-auto bg-white/5 p-8 rounded-2xl border border-dashed border-indigo-400">
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-widest">List skills separated by commas</p>
+            <textarea className="w-full h-40 bg-transparent text-xl font-medium text-white p-4 outline-none resize-none" value={data.skills.items.join(', ')} onChange={handleSkillsChange} />
           </div>
         ) : (
           <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
             {data.skills.items.filter(Boolean).map((skill, index) => (
-              <div key={index} className="glass-card px-8 py-4 rounded-full font-bold text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:scale-105 hover:border-indigo-500/30 cursor-default">
+              <div 
+                key={index} 
+                className="px-8 py-4 rounded-2xl font-bold text-gray-700 dark:text-gray-300 bg-white/5 hover:bg-indigo-500 hover:text-white border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/20 cursor-default"
+              >
                 {skill}
               </div>
             ))}
@@ -309,35 +319,113 @@ function App() {
   );
 
   const renderProjects = () => (
-    <section className="py-24 scroll-mt-24 relative" id="projects">
-      <div className="absolute top-1/2 left-0 w-64 h-64 bg-teal-500/10 blur-[120px] rounded-full pointer-events-none -z-10"></div>
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-12 relative">
-        <SectionHeader sectionObj={data.projects} sectionKey="projects" desc="A curated selection of my most recent and impactful work." />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+    <section className="py-24 scroll-mt-24" id="projects">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <SectionHeader sectionObj={data.projects} sectionKey="projects" desc="A curated gallery of my latest work, bridging innovation with impact through media-rich showcases." />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {data.projects.items.map((project, index) => (
-            <div key={project.id} className="glass-card rounded-[2.5rem] p-10 flex flex-col relative group overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem]"></div>
+            <div key={project.id} className="group relative bg-white dark:bg-gray-800/40 rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-700/50 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col">
               
-              {isEditing && <button className="absolute top-6 right-6 bg-red-100 dark:bg-red-900/30 text-red-500 hover:text-white hover:bg-red-500 p-3 rounded-full transition-colors z-20" onClick={() => removeItemSectionItem('projects', project.id)}><Trash2 size={18} /></button>}
-              
-              <div className="relative z-10 flex flex-col h-full">
-                {!isEditing ? <h4 className="text-3xl font-black mb-4 text-slate-900 dark:text-white group-hover:text-indigo-500 transition-colors">{project.title}</h4> : <InputField value={project.title} onChange={(v) => handleArrayChange('projects', index, 'title', v)} className="mb-4 font-bold text-2xl" placeholder="Project Title" />}
-                {!isEditing ? <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 flex-grow leading-relaxed font-medium">{project.description}</p> : <InputField value={project.description} onChange={(v) => handleArrayChange('projects', index, 'description', v)} isTextArea className="mb-6 flex-grow" placeholder="Project Details" />}
-                {(!isEditing && project.link) ? (
-                  <a href={ensureProtocol(project.link)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 text-slate-900 dark:text-white bg-slate-100 dark:bg-white/10 px-6 py-3 rounded-full font-bold w-fit hover:bg-indigo-500 hover:text-white dark:hover:bg-indigo-500 transition-all shadow-sm">
-                    View Project <ExternalLink size={16}/>
-                  </a>
-                ) : isEditing ? (
-                  <InputField value={project.link} onChange={(v) => handleArrayChange('projects', index, 'link', v)} placeholder="https://" />
-                ) : null}
+              {/* Media Preview Section */}
+              <div className="aspect-video relative overflow-hidden bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+                {project.videoUrl ? (
+                  <iframe
+                    className="w-full h-full"
+                    src={project.videoUrl}
+                    title={project.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                ) : project.imageUrl ? (
+                  <img 
+                    src={project.imageUrl} 
+                    alt={project.title} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                ) : (
+                  <Layout size={64} className="text-gray-300 dark:text-gray-700" />
+                )}
+
+                {/* Hover Overlay with Quick Links */}
+                {!isEditing && (
+                  <div className="absolute inset-0 bg-indigo-900/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                    {project.link && (
+                      <a href={ensureProtocol(project.link)} target="_blank" rel="noopener noreferrer" className="p-3 bg-white text-indigo-600 rounded-full hover:scale-110 transition-transform shadow-xl" title="Live Preview">
+                        <ExternalLink size={24} />
+                      </a>
+                    )}
+                    {project.codeLink && (
+                      <a href={ensureProtocol(project.codeLink)} target="_blank" rel="noopener noreferrer" className="p-3 bg-white text-gray-900 rounded-full hover:scale-110 transition-transform shadow-xl" title="Source Code">
+                        <Github size={24} />
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
+              
+              <div className="p-8 grow">
+                {isEditing ? (
+                  <div className="space-y-4">
+                    <InputField value={project.title} onChange={(v) => handleArrayChange('projects', index, 'title', v)} className="text-xl font-bold" placeholder="Project Name" />
+                    <InputField value={project.description} onChange={(v) => handleArrayChange('projects', index, 'description', v)} isTextArea className="text-sm" placeholder="Detailed project impact..." />
+                    
+                    <div className="bg-indigo-500/5 p-4 rounded-2xl border border-indigo-500/10 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <label className="flex items-center gap-2 bg-indigo-600 text-white px-3 py-2 rounded-xl text-xs font-bold cursor-pointer hover:bg-indigo-700 transition-colors">
+                          <Upload size={14} /> Upload Screenshot
+                          <input type="file" accept="image/*" onChange={(e) => handleProjectImageUpload(e, index)} className="hidden" />
+                        </label>
+                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">OR PASTE URL</span>
+                      </div>
+                      <InputField value={project.imageUrl} onChange={(v) => handleArrayChange('projects', index, 'imageUrl', v)} className="text-xs" placeholder="Image URL (Alternative)" />
+                      <InputField value={project.videoUrl} onChange={(v) => handleArrayChange('projects', index, 'videoUrl', v)} className="text-xs" placeholder="YouTube Embed URL (Optional)" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <InputField value={project.link} onChange={(v) => handleArrayChange('projects', index, 'link', v)} className="text-xs" placeholder="Live Site" />
+                      <InputField value={project.codeLink} onChange={(v) => handleArrayChange('projects', index, 'codeLink', v)} className="text-xs" placeholder="GitHub Link" />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h3 className="text-2xl font-black mb-3 text-gray-900 dark:text-white group-hover:text-indigo-500 transition-colors uppercase tracking-tight line-clamp-1">{project.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-medium mb-6 line-clamp-3 text-sm italic">"{project.description}"</p>
+                    
+                    <div className="flex items-center gap-4 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700/30">
+                      {project.link && (
+                        <a href={ensureProtocol(project.link)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:gap-3 transition-all">
+                          Live Demo <ArrowRight size={16} />
+                        </a>
+                      )}
+                      {project.codeLink && (
+                        <a href={ensureProtocol(project.codeLink)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-all ml-auto">
+                          <Github size={16} /> Code
+                        </a>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {isEditing && (
+                <button className="absolute top-4 right-4 bg-rose-500 text-white p-2 rounded-xl shadow-lg hover:scale-110 transition-transform" onClick={() => removeItemSectionItem('projects', project.id)}>
+                   <Trash2 size={16} />
+                </button>
+              )}
             </div>
           ))}
+
           {isEditing && (
-            <div className="glass-card border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-[2.5rem] min-h-[300px] flex flex-col items-center justify-center gap-4 text-slate-500 cursor-pointer hover:border-indigo-500 hover:text-indigo-500 hover:bg-slate-50 dark:hover:bg-indigo-500/10 transition-colors" onClick={() => addItem('projects', { title: "New Project", description: "Brief description...", link: "https://" })}>
-              <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-full"><Plus size={40} /></div>
-              <span className="font-bold text-xl">Add Project Case</span>
-            </div>
+            <button 
+              onClick={() => addItem('projects', { title: "Next Innovation", description: "Seamless user experiences.", link: "", codeLink: "", imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800", videoUrl: "" })}
+              className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-indigo-400 rounded-3xl bg-indigo-500/[0.03] hover:bg-indigo-500/[0.08] transition-all text-indigo-500 shadow-inner group"
+            >
+              <div className="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Plus size={32} />
+              </div>
+              <span className="font-black uppercase tracking-widest text-sm">Add Portfolio Media Case</span>
+            </button>
           )}
         </div>
       </div>
@@ -345,43 +433,66 @@ function App() {
   );
 
   const renderExperience = () => (
-    <section className="py-24 scroll-mt-24 relative" id="experience">
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-indigo-500/5 to-transparent pointer-events-none -z-10"></div>
-      <div className="max-w-[1200px] mx-auto px-6 sm:px-12 relative">
-        <SectionHeader sectionObj={data.experience} sectionKey="experience" desc="My professional trajectory and leadership roles." />
-        <div className="flex flex-col gap-8 relative before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-gradient-to-b before:from-indigo-500 before:to-purple-500 md:before:left-[8.5rem] lg:before:left-[10.5rem] before:rounded-full">
+    <section className="py-24 scroll-mt-24" id="experience">
+      <div className="max-w-5xl mx-auto px-6 lg:px-8">
+        <SectionHeader sectionObj={data.experience} sectionKey="experience" desc="My professional journey and key achievements in the industry." />
+        <div className="space-y-8 relative before:absolute before:inset-y-0 before:left-0 md:before:left-1/2 md:before:-translate-x-px before:w-0.5 before:bg-gradient-to-b before:from-indigo-500 before:via-purple-500 before:to-pink-500 before:opacity-30">
           {data.experience.items.map((exp, index) => (
-            <div key={exp.id} className="glass-card p-8 md:p-12 rounded-[2.5rem] relative ml-8 md:ml-[11rem] lg:ml-[14rem] lg:hover:translate-x-4">
-              <div className="absolute top-1/2 -translate-y-1/2 -left-[2.4rem] md:-left-[2.9rem] lg:-left-[3.9rem] w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-900 border-4 border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)] z-10 transition-transform duration-300 hover:scale-125"></div>
-              {isEditing && <button className="absolute top-6 right-6 bg-red-100 dark:bg-red-900/30 text-red-500 hover:text-white hover:bg-red-500 p-3 rounded-full transition-colors z-20" onClick={() => removeItemSectionItem('experience', exp.id)}><Trash2 size={18} /></button>}
-
-              
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <div className="space-y-2">
-                  {!isEditing ? <h4 className="text-3xl font-black text-slate-900 dark:text-white">{exp.title}</h4> : <InputField value={exp.title} onChange={(v) => handleArrayChange('experience', index, 'title', v)} className="mb-2 font-bold text-2xl" placeholder="Role Title" />}
-                  {(!isEditing && !exp.organization) ? null : isEditing ? <InputField value={exp.organization} onChange={(v) => handleArrayChange('experience', index, 'organization', v)} placeholder="Company" /> : <h5 className="text-lg text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wide">{exp.organization}</h5>}
+            <div key={exp.id} className="relative group perspective">
+              <div className={`md:flex items-center justify-between ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+                <div className="hidden md:block w-1/2"></div>
+                <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-0 md:top-1/2 md:-translate-y-1/2 w-4 h-4 rounded-full bg-indigo-600 border-4 border-white dark:border-gray-900 shadow-[0_0_15px_rgba(79,70,229,0.5)] group-hover:scale-150 transition-transform duration-300 z-10"></div>
+                <div className="md:w-[45%] ml-8 md:ml-0">
+                  <div className="bg-white dark:bg-gray-800/60 backdrop-blur-xl p-8 rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl group-hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group-hover:border-indigo-500/50">
+                    <div className="flex flex-col gap-4">
+                      {isEditing ? (
+                        <div className="space-y-3">
+                          <InputField value={exp.title} onChange={(v) => handleArrayChange('experience', index, 'title', v)} className="text-xl font-bold" placeholder="Job Title" />
+                          <InputField value={exp.organization} onChange={(v) => handleArrayChange('experience', index, 'organization', v)} className="text-sm font-bold text-indigo-500" placeholder="Company/Organization" />
+                          <InputField value={exp.duration} onChange={(v) => handleArrayChange('experience', index, 'duration', v)} className="text-xs" placeholder="Time Frame" />
+                          <InputField value={exp.description} onChange={(v) => handleArrayChange('experience', index, 'description', v)} isTextArea className="text-sm" placeholder="Key responsibilities..." />
+                          <InputField value={exp.achievements} onChange={(v) => handleArrayChange('experience', index, 'achievements', v)} className="text-xs font-semibold" placeholder="Core accomplishment" />
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex justify-between items-start gap-4">
+                            <div>
+                              <h4 className="text-2xl font-black text-gray-900 dark:text-white leading-tight mb-1">{exp.title}</h4>
+                              <p className="text-indigo-500 font-bold uppercase tracking-widest text-sm">{exp.organization}</p>
+                            </div>
+                            <span className="text-xs font-black px-3 py-1 bg-gray-100 dark:bg-white/5 rounded-full text-gray-500 dark:text-gray-400 whitespace-nowrap uppercase tracking-tighter">
+                              {exp.duration}
+                            </span>
+                          </div>
+                          <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed italic">{exp.description}</p>
+                          {exp.achievements && (
+                            <div className="mt-2 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+                              <p className="text-gray-900 dark:text-gray-200 font-bold text-sm flex items-center gap-2 tracking-tight">
+                                <Sparkles className="text-indigo-500" size={16} />
+                                {exp.achievements}
+                              </p>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                {(!isEditing && !exp.duration) ? null : isEditing ? <InputField value={exp.duration} onChange={(v) => handleArrayChange('experience', index, 'duration', v)} placeholder="Duration" className="w-auto" /> : <span className="inline-flex bg-slate-100 dark:bg-white/10 px-4 py-2 rounded-full text-sm font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap border border-slate-200 dark:border-white/10">{exp.duration}</span>}
               </div>
-
-              {(!isEditing && !exp.description) ? null : isEditing ? <InputField value={exp.description} onChange={(v) => handleArrayChange('experience', index, 'description', v)} isTextArea className="mb-6 font-medium" placeholder="Role description" /> : <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 leading-relaxed font-medium">{exp.description}</p>}
-              
-              {(!isEditing && !exp.achievements) ? null : isEditing ? (
-                <InputField value={exp.achievements} onChange={(v) => handleArrayChange('experience', index, 'achievements', v)} className="text-sm font-semibold mt-4" placeholder="Highlight/Achievement (Optional)" />
-              ) : (
-                <div className="bg-gradient-to-r from-indigo-500/10 to-transparent p-6 rounded-2xl border-l-4 border-indigo-500 mt-4">
-                  <p className="text-slate-800 dark:text-slate-200 font-semibold flex items-start gap-3">
-                    <Sparkles className="text-indigo-500 shrink-0" size={20} />
-                    {exp.achievements}
-                  </p>
-                </div>
+              {isEditing && (
+                <button className="absolute -top-3 -right-3 bg-rose-500 text-white p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-20" onClick={() => removeItemSectionItem('experience', exp.id)}>
+                   <Trash2 size={16} />
+                </button>
               )}
             </div>
           ))}
           {isEditing && (
-            <div className="glass-card border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-[2.5rem] min-h-[150px] ml-8 md:ml-[11rem] lg:ml-[14rem] flex items-center justify-center gap-4 text-slate-500 cursor-pointer hover:border-indigo-500 hover:text-indigo-500 hover:bg-slate-50 dark:hover:bg-indigo-500/10 transition-colors" onClick={() => addItem('experience', { title: "Role", organization: "Company", duration: "Year - Year", description: "Responsibilities", achievements: "" })}>
-              <Plus size={32} /><span className="font-bold text-xl">Add New Role</span>
-            </div>
+            <button 
+              onClick={() => addItem('experience', { title: "Role", organization: "Organization", duration: "20XX - 20XX", description: "Elevating the standards of production...", achievements: "Directly increased workflow efficiency." })}
+              className="w-full py-6 border-2 border-dashed border-indigo-400 rounded-3xl bg-indigo-500/5 hover:bg-indigo-500/10 transition-all text-indigo-500 font-bold flex items-center justify-center gap-3"
+            >
+              <PlusSquare size={20} /> Append New Experience
+            </button>
           )}
         </div>
       </div>
@@ -389,43 +500,60 @@ function App() {
   );
 
   const renderAchievements = () => (
-    <section className="py-24 scroll-mt-24 relative" id="achievements">
-      <div className="absolute top-1/2 left-10 w-48 h-48 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-12 relative">
-        <SectionHeader sectionObj={data.achievements} sectionKey="achievements" desc="A record of continuous growth, awards, and certifications." />
-        <div className="flex flex-wrap justify-center items-stretch gap-8">
+    <section className="py-24 scroll-mt-24" id="achievements">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <SectionHeader sectionObj={data.achievements} sectionKey="achievements" desc="Milestones and professional accolades earned through dedication." />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {data.achievements.items.map((ach, index) => (
-            <div key={ach.id} className="glass-card rounded-[2.5rem] p-10 flex flex-col group hover:-translate-y-3 flex-grow basis-[300px] max-w-lg">
-              {isEditing && <button className="absolute top-6 right-6 bg-red-100 dark:bg-red-900/30 text-red-500 hover:text-white hover:bg-red-500 p-3 rounded-full transition-colors z-20" onClick={() => removeItemSectionItem('achievements', ach.id)}><Trash2 size={18} /></button>}
+            <div key={ach.id} className="group flex flex-col p-10 bg-white dark:bg-gray-800/40 rounded-[2rem] border border-gray-200 dark:border-gray-700/50 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-125 transition-transform group-hover:opacity-20">
+                <Sparkles size={100} className="text-purple-500" />
+              </div>
               
-              <div className="w-16 h-16 bg-slate-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mb-8 border border-slate-200 dark:border-white/10 group-hover:bg-indigo-500 group-hover:text-white group-hover:border-transparent transition-colors text-indigo-500">
-                <Sparkles size={28} />
+              <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-500 mb-8 border border-indigo-500/20">
+                <Sparkles size={24} />
               </div>
 
-              {!isEditing ? <h4 className="text-2xl font-black mb-3 text-slate-900 dark:text-white">{ach.title}</h4> : <InputField value={ach.title} onChange={(v) => handleArrayChange('achievements', index, 'title', v)} className="mb-3 font-bold text-xl" placeholder="Award Title" />}
-              
-              <div className="flex flex-wrap items-center gap-2 mb-6">
-                {(!isEditing && !ach.issuer) ? null : isEditing ? <InputField value={ach.issuer} onChange={(v) => handleArrayChange('achievements', index, 'issuer', v)} placeholder="Issuer (Optional)" className="text-sm" /> : <span className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{ach.issuer}</span>}
-                {(!isEditing && ach.issuer && ach.date) && <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span>}
-                {(!isEditing && !ach.date) ? null : isEditing ? <InputField value={ach.date} onChange={(v) => handleArrayChange('achievements', index, 'date', v)} placeholder="Date (Optional)" className="text-sm w-auto" /> : <span className="text-sm font-bold text-slate-500 dark:text-slate-400">{ach.date}</span>}
-              </div>
-
-              {(!isEditing && !ach.description) ? null : isEditing ? <InputField value={ach.description} onChange={(v) => handleArrayChange('achievements', index, 'description', v)} isTextArea className="mb-6" placeholder="Brief description (Optional)" /> : <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed flex-grow mb-8 font-medium">{ach.description}</p>}
-              
-              {(!isEditing && ach.link) ? (
-                <a href={ensureProtocol(ach.link)} target="_blank" rel="noopener noreferrer" className="mt-auto font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2 hover:gap-3 transition-all border-b-2 border-transparent hover:border-indigo-500 w-fit pb-1">
-                  Verify Credential <ChevronRight size={18} />
-                </a>
-              ) : isEditing ? (
-                <InputField value={ach.link} onChange={(v) => handleArrayChange('achievements', index, 'link', v)} placeholder="Credential Link (Optional)" />
-              ) : null}
+              {isEditing ? (
+                <div className="space-y-4">
+                  <InputField value={ach.title} onChange={(v) => handleArrayChange('achievements', index, 'title', v)} className="text-xl font-bold" placeholder="Achievement Name" />
+                  <div className="flex gap-4">
+                    <InputField value={ach.issuer} onChange={(v) => handleArrayChange('achievements', index, 'issuer', v)} placeholder="Issuer" />
+                    <InputField value={ach.date} onChange={(v) => handleArrayChange('achievements', index, 'date', v)} placeholder="Date" />
+                  </div>
+                  <InputField value={ach.description} onChange={(v) => handleArrayChange('achievements', index, 'description', v)} isTextArea placeholder="Context and details..." />
+                  <InputField value={ach.link} onChange={(v) => handleArrayChange('achievements', index, 'link', v)} placeholder="Credential Link" />
+                </div>
+              ) : (
+                <>
+                  <h4 className="text-2xl font-black text-gray-900 dark:text-white mb-3 tracking-tight leading-snug">{ach.title}</h4>
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="text-xs font-black uppercase tracking-widest text-indigo-500">{ach.issuer}</span>
+                    {ach.date && <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>}
+                    <span className="text-xs font-bold text-gray-500">{ach.date}</span>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed italic mb-8 grow">"{ach.description}"</p>
+                  {ach.link && (
+                    <a href={ensureProtocol(ach.link)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-indigo-500 font-bold hover:gap-3 transition-all border-b border-transparent hover:border-indigo-500 pb-0.5 w-fit">
+                      Verify Achievement <ArrowRight size={16} />
+                    </a>
+                  )}
+                </>
+              )}
+              {isEditing && (
+                <button className="absolute top-4 right-4 bg-rose-500 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => removeItemSectionItem('achievements', ach.id)}>
+                   <Trash2 size={16} />
+                </button>
+              )}
             </div>
           ))}
           {isEditing && (
-            <div className="glass-card border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-[2.5rem] min-h-[350px] flex flex-col items-center justify-center gap-4 text-slate-500 cursor-pointer hover:border-indigo-500 hover:text-indigo-500 hover:bg-slate-50 dark:hover:bg-indigo-500/10 transition-colors flex-grow basis-[300px] max-w-lg" onClick={() => addItem('achievements', { title: "Award Name", issuer: "Issuer", date: "Year", description: "Details", link: "" })}>
-              <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-full"><Plus size={40} /></div>
-              <span className="font-bold text-xl">Add Certification</span>
-            </div>
+            <button 
+              onClick={() => addItem('achievements', { title: "New Distinction", issuer: "Authority", date: "Year", description: "A testament to professional growth.", link: "" })}
+              className="flex items-center justify-center p-12 border-2 border-dashed border-indigo-400 rounded-[2rem] bg-indigo-500/5 hover:bg-indigo-500/10 transition-all text-indigo-500 font-bold gap-3"
+            >
+              <Plus size={24} /> New Certification
+            </button>
           )}
         </div>
       </div>
@@ -445,42 +573,44 @@ function App() {
     const availableToAdd = allSocials.filter(social => data.contact[social.id] == null);
 
     return (
-      <section className="py-32 scroll-mt-24 relative" id="contact">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-indigo-500/5 dark:to-indigo-500/10 pointer-events-none -z-10"></div>
-        <div className="max-w-[1400px] mx-auto px-6 sm:px-12">
-            <SectionHeader sectionObj={data.contact} sectionKey="contact" desc="Ready to create something magnificent? Send me a message." />
-            {contactLinks.length > 0 ? (
-            <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto">
+      <section className="py-24 scroll-mt-24" id="contact">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <SectionHeader sectionObj={data.contact} sectionKey="contact" desc="Interested in collaboration or have a project in mind? Let's connect." />
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {contactLinks.map(social => (
-                <div key={social.id} className="glass-card p-10 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-6 group hover:-translate-y-2 hover:border-indigo-500/50 transition-all flex-grow basis-[240px] max-w-sm relative">
-                  {isEditing && <button className="absolute top-6 right-6 bg-red-100 dark:bg-red-900/30 text-red-500 hover:text-white hover:bg-red-500 p-3 rounded-full transition-colors z-20" onClick={() => handleChange('contact', social.id, null)}><Trash2 size={18} /></button>}
-                  <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-indigo-500 group-hover:text-white transition-all shadow-inner">
-                    <social.icon size={32} />
+                <div key={social.id} className="group relative bg-white dark:bg-gray-800/60 p-10 rounded-3xl border border-gray-200 dark:border-gray-700/50 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                  <div className="flex flex-col items-center gap-6 text-center">
+                    <div className="w-20 h-20 rounded-2xl bg-indigo-500 group-hover:rotate-6 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-all duration-300">
+                      <social.icon size={36} />
+                    </div>
+                    <div>
+                      <span className="text-xs font-black uppercase tracking-[0.2em] text-gray-500 mb-2 block">{social.label}</span>
+                      {isEditing ? (
+                        <InputField value={data.contact[social.id]} onChange={(v) => handleChange('contact', social.id, v)} className="text-center" placeholder={`Enter ${social.label}...`} />
+                      ) : (
+                        <a href={social.id === 'email' ? `mailto:${data.contact.email}` : social.id === 'phone' ? `tel:${data.contact.phone}` : ensureProtocol(data.contact[social.id].includes('http') ? data.contact[social.id] : `${social.pre}${data.contact[social.id]}`)} target="_blank" rel="noreferrer" className="text-xl font-bold text-gray-900 dark:text-white hover:text-indigo-500 transition-colors break-all">
+                          {social.id === 'email' ? data.contact.email : social.id === 'phone' ? data.contact.phone : (data.contact[social.id].includes('http') ? 'View Profile' : `@${data.contact[social.id].replace(/^@/, '')}`)}
+                        </a>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2 w-full">
-                    <span className="text-xs font-black tracking-widest text-slate-400 uppercase">{social.label}</span>
-                    {!isEditing ? (
-                      <a href={social.id === 'email' ? `mailto:${data.contact.email}` : social.id === 'phone' ? `tel:${data.contact.phone}` : ensureProtocol(data.contact[social.id].includes('http') ? data.contact[social.id] : `${social.pre}${data.contact[social.id]}`)} target="_blank" rel="noreferrer" className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-indigo-500 truncate w-full px-2">
-                        {social.id === 'email' ? data.contact.email : social.id === 'phone' ? data.contact.phone : (data.contact[social.id].includes('http') ? 'Profile' : `@${data.contact[social.id].replace(/^@/, '')}`)}
-                      </a>
-                    ) : (
-                      <InputField value={data.contact[social.id]} onChange={(v) => handleChange('contact', social.id, v)} placeholder="Leave blank to hide" />
-                    )}
-                  </div>
+                  {isEditing && (
+                    <button className="absolute top-4 right-4 text-rose-500 p-2 hover:bg-rose-50 rounded-lg transition-colors" onClick={() => handleChange('contact', social.id, null)}>
+                      <Trash2 size={18} />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
-            ) : (
-              <div className="text-center text-slate-500 font-medium p-10 mt-4 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-700">No contact methods configured.</div>
-            )}
 
             {isEditing && availableToAdd.length > 0 && (
-              <div className="mt-12">
-                <p className="text-center text-slate-500 font-medium mb-6 uppercase tracking-wider text-sm">Add Connection Methods</p>
-                <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+              <div className="mt-16 text-center">
+                <p className="text-sm font-black uppercase tracking-[0.2em] text-gray-400 mb-8 italic invisible md:visible">Expand Your Reach</p>
+                <div className="flex flex-wrap justify-center gap-4">
                   {availableToAdd.map(social => (
-                    <button key={social.id} className="glass-card px-6 py-4 rounded-[1.5rem] flex items-center gap-3 font-bold text-slate-600 dark:text-slate-300 hover:text-indigo-500 hover:border-indigo-500/50 transition-all" onClick={() => handleChange('contact', social.id, '')}>
-                      <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded-full"><social.icon size={18} /></div> Add {social.label}
+                    <button key={social.id} onClick={() => handleChange('contact', social.id, '')} className="flex items-center gap-3 px-6 py-4 rounded-xl bg-white dark:bg-gray-800 border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-indigo-500 transition-all font-bold text-gray-500 hover:text-indigo-500">
+                      <social.icon size={20} /> Add {social.label}
                     </button>
                   ))}
                 </div>
@@ -491,61 +621,95 @@ function App() {
     );
   };
 
+  const renderCustom = (item) => (
+    <section className="py-24 scroll-mt-24" id={item.id} key={item.id}>
+      <div className="max-w-5xl mx-auto px-6 lg:px-8">
+        <div className="bg-white dark:bg-gray-800/40 p-12 md:p-20 rounded-[3rem] border border-gray-200 dark:border-gray-700 shadow-xl relative overflow-hidden text-center">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+          {isEditing ? (
+            <div className="space-y-8">
+              <InputField value={data[item.id].title} onChange={(v) => handleChange(item.id, 'title', v)} className="text-3xl font-black text-center" placeholder="Section Header" />
+              <InputField value={data[item.id].content} onChange={(v) => handleChange(item.id, 'content', v)} isTextArea className="text-xl text-center" placeholder="Content details..." />
+            </div>
+          ) : (
+            <>
+              {data[item.id].title && <h3 className="text-4xl md:text-5xl font-black mb-10 text-gray-900 dark:text-white tracking-tight">{data[item.id].title}</h3>}
+              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 font-medium leading-relaxed whitespace-pre-wrap">{data[item.id].content}</p>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+
   const renderSectionMap = {
     hero: renderHero, about: renderAbout, skills: renderSkills, projects: renderProjects, experience: renderExperience, achievements: renderAchievements, contact: renderContact
   };
 
   return (
-    <>
-      {/* Background Base */}
-      <div className="fixed inset-0 bg-[#fafafa] dark:bg-[#050505] -z-30 transition-colors duration-1000"></div>
-      
-      {/* Light Theme Linear Grid Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-20 transition-opacity duration-1000 dark:opacity-0 opacity-100 text-slate-900">
-        <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_0%,#000_70%,transparent_100%)]"></div>
-        <div className="absolute left-0 right-0 top-0 m-auto h-[500px] w-[800px] rounded-full bg-indigo-500/10 blur-[100px] translate-y-[-200px]"></div>
-      </div>
-
-      {/* Dark Theme Linear Grid Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-20 transition-opacity duration-1000 dark:opacity-100 opacity-0 text-white">
-        <div className="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_0%,#000_70%,transparent_100%)]"></div>
-        <div className="absolute left-0 right-0 top-[-10%] m-auto h-[400px] w-[600px] rounded-full bg-indigo-500/20 blur-[120px]"></div>
+    <div className="selection:bg-indigo-500/30">
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 -z-50 bg-white dark:bg-gray-900 transition-colors duration-700"></div>
+      <div className="fixed inset-0 -z-40 overflow-hidden pointer-events-none opacity-40">
+         <div className="absolute top-[-10%] left-[-10%] w-[50%] aspect-square rounded-full bg-indigo-500/10 blur-[120px] animate-pulse"></div>
+         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] aspect-square rounded-full bg-purple-500/10 blur-[120px] animate-pulse delay-700"></div>
       </div>
       
-      <div className="min-h-screen relative pb-32">
-        <nav className="fixed top-0 left-0 right-0 z-50 nav-glass">
-          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 sm:px-12 py-5">
-            <div className="text-2xl font-black font-outfit text-slate-900 dark:text-white tracking-tighter">
-              {data.hero.name} <span className="text-gradient">{data.hero.lastName}</span>
-            </div>
-            <div className="hidden lg:flex items-center gap-8 text-sm font-bold tracking-wider uppercase font-outfit">
-              {data.layout.filter(l => l.visible).map(l => (
-                <a key={l.id} href={`#${l.id}`} className={`nav-link relative py-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors before:absolute before:bottom-0 before:left-0 before:h-[3px] before:rounded-t-full before:bg-indigo-500 before:transition-all before:duration-300 ${activeSection === l.id ? 'text-slate-900 dark:!text-white before:w-full' : 'before:w-0 hover:before:w-1/2'}`}>
-                  {data[l.id]?.title || l.id}
-                </a>
-              ))}
-              {data.layout.find(l => l.id === 'contact' && l.visible) && (
-              <button onClick={(e) => { e.preventDefault(); setShowHireMeModal(true); }} className="ml-4 btn-primary px-7 py-3 rounded-full font-bold tracking-wider uppercase text-sm font-outfit">
-                HIRE ME
-              </button>
-              )}
-              <button className="ml-2 w-12 h-12 rounded-full glass-card hover:bg-white dark:hover:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-all border-none" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} title="Toggle Theme">
-                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
-            </div>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700/50 transition-all duration-300">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 sm:px-12 py-5">
+          <div className="text-2xl font-black tracking-tighter text-gray-900 dark:text-white group cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+            {data.hero.name} <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent group-hover:to-pink-500 transition-all duration-500">{data.hero.lastName}</span>
           </div>
-        </nav>
-
-        <div className="fixed bottom-8 right-8 flex gap-4 z-[9999] bg-white/90 dark:bg-[#111111]/90 backdrop-blur-xl p-3 rounded-full shadow-2xl border border-slate-200 dark:border-white/10">
-          <button className={`flex items-center gap-2 px-6 py-4 rounded-full font-bold text-sm transition-all ${isEditing ? 'bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.4)]' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5'}`} onClick={() => setIsEditing(!isEditing)}>
-            {isEditing ? <Check size={18} /> : <Edit2 size={18} />}
-            <span className="hidden sm:inline">{isEditing ? 'Save Design' : 'Customize Portfolio'}</span>
-          </button>
-          <button className="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-4 rounded-full font-bold text-sm shadow-md hover:scale-105 transition-all" onClick={() => setShowExportModal(true)}>
-            <Download size={18} /> <span className="hidden sm:inline">Export Zip</span>
-          </button>
+          <div className="hidden lg:flex items-center gap-10">
+            {data.layout.filter(l => l.visible).map(l => (
+              <a 
+                key={l.id} 
+                href={`#${l.id}`} 
+                className={`text-sm font-black uppercase tracking-widest transition-all duration-300 relative py-2 ${activeSection === l.id ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+              >
+                {data[l.id]?.title?.split(' ')[0] || l.id}
+                {activeSection === l.id && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 rounded-full"></span>}
+              </a>
+            ))}
+            <button 
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-3 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:scale-110 transition-all"
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            {data.layout.find(l => l.id === 'contact' && l.visible) && (
+              <button 
+                onClick={() => setShowHireMeModal(true)}
+                className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-8 py-3 rounded-2xl font-black text-sm tracking-widest uppercase hover:scale-105 transition-all shadow-xl"
+              >
+                Let's Talk
+              </button>
+            )}
+          </div>
         </div>
+      </nav>
 
+      {/* Control Panel Floating */}
+      <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] flex gap-4 p-4 rounded-[2.5rem] bg-gray-900/90 dark:bg-white/90 backdrop-blur-2xl shadow-2xl border border-white/10 dark:border-black/10 items-center">
+        <button 
+          onClick={() => setIsEditing(!isEditing)}
+          className={`group flex items-center gap-3 px-8 py-4 rounded-[1.8rem] font-black text-sm uppercase tracking-widest transition-all ${isEditing ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-600/30' : 'text-white dark:text-gray-900 hover:bg-white/10 dark:hover:bg-black/5'}`}
+        >
+          {isEditing ? <Check size={18} className="animate-bounce" /> : <Edit2 size={18} />}
+          <span className="hidden sm:inline">{isEditing ? 'Save Changes' : 'Design Mode'}</span>
+        </button>
+        <div className="w-px h-8 bg-white/20 dark:bg-black/10"></div>
+        <button 
+          onClick={() => setShowExportModal(true)}
+          className="group flex items-center gap-3 text-white dark:text-gray-900 hover:scale-110 transition-all px-4"
+          title="Export Project"
+        >
+          <Download size={24} />
+          <span className="hidden lg:inline text-xs font-black uppercase tracking-tighter">Export Zip</span>
+        </button>
+      </div>
+
+      <main className="min-h-screen pb-40">
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="portfolio">
             {(provided) => (
@@ -558,22 +722,21 @@ function App() {
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
-                          className={`relative rounded-[3rem] ${isEditing ? 'border-4 border-dashed border-transparent hover:border-indigo-500/50 mt-12 py-10 bg-slate-50/80 dark:bg-slate-900/40 backdrop-blur-xl' : ''} ${!item.visible ? 'opacity-30 grayscale' : ''} ${snapshot.isDragging ? 'z-50 shadow-2xl scale-[1.02] bg-white dark:bg-[#050505]' : 'transition-transform'}`}
-                          style={{ ...provided.draggableProps.style }}
+                          className={`relative ${isEditing ? 'border-4 border-dashed border-indigo-400/20 rounded-[4rem] my-16 py-12 bg-indigo-500/[0.02] dark:bg-indigo-500/[0.01]' : ''} ${!item.visible ? 'opacity-30' : ''} ${snapshot.isDragging ? 'z-50 shadow-2xl scale-[1.02] bg-white dark:bg-gray-800' : 'transition-transform duration-500'}`}
                         >
                           {isEditing && (
-                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex items-center justify-center gap-4 px-6 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full z-40 shadow-xl opacity-0 hover:opacity-100 transition-opacity" style={{opacity: snapshot.isDragging ? 1 : undefined}}>
-                              {!item.locked && <div {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing text-slate-500 hover:text-indigo-500"><GripVertical size={20} /></div>}
-                              <span className="text-xs font-black tracking-widest text-indigo-500 uppercase">{item.id.replace('custom_', 'Custom ')}</span>
+                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 flex items-center gap-4 px-8 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full z-40 shadow-2xl">
+                              {!item.locked && <div {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing text-indigo-500"><GripVertical size={20} /></div>}
+                              <span className="text-[10px] font-black tracking-[0.3em] text-gray-500 dark:text-gray-400 uppercase">{item.id.replace('custom_', 'Global ')}</span>
                               {!item.locked && (
                                 <>
-                                  <button className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" title="Toggle Visibility" onClick={() => toggleSectionVisibility(item.id)}>{item.visible ? <Eye size={18} /> : <EyeOff size={18} />}</button>
-                                  <button className="text-slate-400 hover:text-red-500 transition-colors ml-2 border-l border-slate-200 dark:border-slate-700 pl-4" title="Delete Section" onClick={() => performRemoveSection(item.id)}><Trash2 size={18} /></button>
+                                  <button className="text-gray-400 hover:text-indigo-500 transition-colors" title="Visibility" onClick={() => toggleSectionVisibility(item.id)}>{item.visible ? <Eye size={18} /> : <EyeOff size={18} />}</button>
+                                  <button className="text-gray-400 hover:text-rose-500 transition-colors" title="Delete" onClick={() => performRemoveSection(item.id)}><Trash2 size={18} /></button>
                                 </>
                               )}
                             </div>
                           )}
-                          {item.id.startsWith('custom_') ? renderCustom(item) : renderSectionMap[item.id]()}
+                          {item.id.startsWith('custom_') ? renderCustom(item) : (renderSectionMap[item.id] ? renderSectionMap[item.id]() : null)}
                         </div>
                       )}
                     </Draggable>
@@ -585,81 +748,79 @@ function App() {
           </Droppable>
         </DragDropContext>
 
-        {/* Editing Tools Bottom Bar */}
         {isEditing && (
-          <div className="max-w-4xl mx-auto mt-16 p-8 glass-card border-dashed border-2 border-indigo-500 rounded-[2.5rem] flex flex-col items-center gap-6">
-             <h4 className="text-2xl font-black text-slate-900 dark:text-white">Add New Section</h4>
+          <div className="max-w-4xl mx-auto mt-20 p-12 border-4 border-dashed border-indigo-500/30 rounded-[3rem] text-center bg-white/5">
+             <h4 className="text-2xl font-black text-gray-900 dark:text-white mb-8 tracking-tighter italic">Build Your Narrative</h4>
              <div className="flex flex-wrap justify-center gap-4">
-               <button className="px-6 py-3 bg-indigo-500 text-white rounded-full font-bold flex items-center gap-2 hover:scale-105 transition-all shadow-[0_0_15px_rgba(99,102,241,0.4)]" onClick={addCustomSection}>
-                 <PlusSquare size={18} /> Standard Custom Block
+               <button onClick={addCustomSection} className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-indigo-600/20">
+                 <PlusSquare size={20} /> New Custom Block
                </button>
                {missingSections.map(s => (
-                 <button key={s} className="px-6 py-3 glass-card rounded-full font-bold flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:border-indigo-500 transition-all uppercase text-sm tracking-wider" onClick={() => restoreBuiltInSection(s)}>
-                   <Plus size={16} /> Restore {s}
+                 <button key={s} onClick={() => restoreBuiltInSection(s)} className="px-8 py-4 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl font-bold flex items-center gap-3 hover:border-indigo-500/50 border border-transparent transition-all uppercase text-xs tracking-widest">
+                   <Plus size={18} /> Restore {s}
                  </button>
                ))}
              </div>
           </div>
         )}
+      </main>
 
-        {showExportModal && (
-          <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xl z-[999] flex items-center justify-center animate-in fade-in" onClick={() => setShowExportModal(false)}>
-            <div className="bg-white dark:bg-[#080808] border border-slate-200 dark:border-white/10 rounded-[3rem] p-12 w-[90%] max-w-2xl relative text-center shadow-[0_0_100px_rgba(0,0,0,0.5)]" onClick={e => e.stopPropagation()}>
-              <button className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 p-3 rounded-full" onClick={() => setShowExportModal(false)}><X size={24} /></button>
-              <h3 className="text-4xl font-black font-outfit text-slate-900 dark:text-white mb-4 tracking-tight">Finalize Export</h3>
-              <p className="text-lg text-slate-500 dark:text-slate-400 mb-10 font-medium">Select a permanent theme for your generated standalone site.</p>
-              
-              <div className="grid grid-cols-2 gap-8 mb-10">
-                <div className={`border-2 rounded-[2rem] p-8 cursor-pointer flex flex-col items-center gap-6 transition-all ${exportThemeChoice === 'light' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 shadow-xl shadow-indigo-500/20 scale-105' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-[#050505]'}`} onClick={() => setExportThemeChoice('light')}>
-                  <div className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${exportThemeChoice === 'light' ? 'bg-indigo-500 text-white' : 'bg-slate-100 dark:bg-white/5 text-slate-500'}`}><Sun size={36} /></div>
-                  <div className="font-extrabold text-xl text-slate-900 dark:text-white uppercase tracking-wider">Light Edition</div>
-                </div>
-                <div className={`border-2 rounded-[2rem] p-8 cursor-pointer flex flex-col items-center gap-6 transition-all ${exportThemeChoice === 'dark' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 shadow-xl shadow-indigo-500/20 scale-105' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-[#050505]'}`} onClick={() => setExportThemeChoice('dark')}>
-                  <div className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${exportThemeChoice === 'dark' ? 'bg-indigo-500 text-white' : 'bg-slate-100 dark:bg-white/5 text-slate-500'}`}><Moon size={36} /></div>
-                  <div className="font-extrabold text-xl text-slate-900 dark:text-white uppercase tracking-wider">Dark Edition</div>
-                </div>
-              </div>
-
-              <button className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-6 rounded-2xl font-black text-xl flex justify-center items-center gap-3 hover:shadow-[0_0_30px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:-translate-y-1 transition-all" onClick={performExport}>
-                GENERATE ZIP BUNDLE <Download size={24} />
+      {/* Modals with Premium Blur */}
+      {showExportModal && (
+        <div className="fixed inset-0 bg-gray-900/60 dark:bg-black/90 backdrop-blur-2xl z-[1000] flex items-center justify-center p-6" onClick={() => setShowExportModal(false)}>
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-[3rem] p-10 md:p-16 w-full max-w-2xl relative shadow-[0_0_100px_rgba(0,0,0,0.3)]" onClick={e => e.stopPropagation()}>
+            <button className="absolute top-8 right-8 p-3 rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors" onClick={() => setShowExportModal(false)}><X size={24} /></button>
+            <h3 className="text-4xl font-black text-gray-900 dark:text-white mb-4 tracking-tighter">Ready for the world?</h3>
+            <p className="text-lg text-gray-500 dark:text-gray-400 mb-12 font-medium">Select the permanent aesthetic for your standalone site.</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              <button 
+                onClick={() => setExportThemeChoice('light')}
+                className={`flex flex-col items-center gap-6 p-8 rounded-[2.5rem] border-2 transition-all duration-500 ${exportThemeChoice === 'light' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 shadow-2xl scale-105' : 'border-gray-100 dark:border-gray-800 opacity-60 hover:opacity-100'}`}
+              >
+                <div className={`w-20 h-20 rounded-full flex items-center justify-center ${exportThemeChoice === 'light' ? 'bg-indigo-500 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}><Sun size={40} /></div>
+                <span className="font-black uppercase tracking-widest text-lg text-gray-900 dark:text-white">Pristine Light</span>
+              </button>
+              <button 
+                onClick={() => setExportThemeChoice('dark')}
+                className={`flex flex-col items-center gap-6 p-8 rounded-[2.5rem] border-2 transition-all duration-500 ${exportThemeChoice === 'dark' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 shadow-2xl scale-105' : 'border-gray-100 dark:border-gray-800 opacity-60 hover:opacity-100'}`}
+              >
+                <div className={`w-20 h-20 rounded-full flex items-center justify-center ${exportThemeChoice === 'dark' ? 'bg-indigo-500 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}><Moon size={40} /></div>
+                <span className="font-black uppercase tracking-widest text-lg text-gray-900 dark:text-white">Premium Dark</span>
               </button>
             </div>
-          </div>
-        )}
 
-        {showHireMeModal && (
-          <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xl z-[999] flex items-center justify-center animate-in fade-in" onClick={() => setShowHireMeModal(false)}>
-            <div className="bg-white dark:bg-[#080808] border border-slate-200 dark:border-white/10 rounded-[3rem] p-8 md:p-12 w-[95%] max-w-4xl relative text-center shadow-[0_0_100px_rgba(0,0,0,0.5)] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-              <button className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 p-3 rounded-full" onClick={() => setShowHireMeModal(false)}><X size={24} /></button>
-              <h3 className="text-3xl md:text-4xl font-black font-outfit text-slate-900 dark:text-white mb-4 tracking-tight">Let's Work Together</h3>
-              <p className="text-lg text-slate-500 dark:text-slate-400 mb-10 font-medium">Reach out via any of the platforms below.</p>
-              
-              <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-                {[
-                  { id: 'email', icon: Mail, pre: 'mailto:', label: 'Email' },
-                  { id: 'phone', icon: Phone, pre: 'tel:', label: 'Phone' },
-                  { id: 'linkedin', icon: Linkedin, pre: 'https://linkedin.com/in/', label: 'LinkedIn' },
-                  { id: 'github', icon: Github, pre: 'https://github.com/', label: 'GitHub' },
-                  { id: 'twitter', icon: Twitter, pre: 'https://twitter.com/', label: 'Twitter' }
-                ].filter(social => data.contact[social.id]).map(social => (
-                  <a key={social.id} href={social.id === 'email' ? `mailto:${data.contact.email}` : social.id === 'phone' ? `tel:${data.contact.phone}` : ensureProtocol(data.contact[social.id].includes('http') ? data.contact[social.id] : `${social.pre}${data.contact[social.id]}`)} target="_blank" rel="noreferrer" className="glass-card p-6 md:p-8 rounded-[2rem] flex flex-col items-center justify-center text-center gap-4 group hover:-translate-y-2 hover:border-indigo-500/50 transition-all flex-grow basis-[180px] max-w-[240px]">
-                    <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-indigo-500 group-hover:text-white transition-all shadow-inner">
-                      <social.icon size={28} />
-                    </div>
-                    <div className="flex flex-col gap-1 w-full">
-                      <span className="text-[10px] md:text-xs font-black tracking-widest text-slate-400 uppercase">{social.label}</span>
-                      <span className="font-bold text-sm md:text-base text-slate-900 dark:text-white group-hover:text-indigo-500 truncate w-full block">
-                        {social.id === 'email' || social.id === 'phone' ? data.contact[social.id] : (data.contact[social.id].includes('http') ? 'Profile' : `@${data.contact[social.id].replace(/^@/, '')}`)}
-                      </span>
-                    </div>
-                  </a>
-                ))}
-              </div>
+            <button onClick={performExport} className="w-full bg-indigo-600 text-white py-6 rounded-2xl font-black text-xl hover:scale-105 transition-all shadow-xl shadow-indigo-600/30 flex justify-center items-center gap-4">
+              GENERATE PRODUCTION BUNDLE <Download size={24} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showHireMeModal && (
+        <div className="fixed inset-0 bg-gray-900/60 dark:bg-black/90 backdrop-blur-2xl z-[1000] flex items-center justify-center p-6" onClick={() => setShowHireMeModal(false)}>
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-[3rem] p-10 md:p-16 w-full max-w-4xl relative shadow-[0_0_100px_rgba(0,0,0,0.3)] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <button className="absolute top-8 right-8 p-3 rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors" onClick={() => setShowHireMeModal(false)}><X size={24} /></button>
+            <h3 className="text-4xl font-black text-gray-900 dark:text-white mb-4 tracking-tighter uppercase italic">Let's Create Excellence</h3>
+            <p className="text-lg text-gray-500 dark:text-gray-400 mb-12 font-medium">I am currently available for new projects and collaborations.</p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {allSocials.filter(social => data.contact[social.id]).map(social => (
+                <a key={social.id} href={social.id === 'email' ? `mailto:${data.contact.email}` : social.id === 'phone' ? `tel:${data.contact.phone}` : ensureProtocol(data.contact[social.id].includes('http') ? data.contact[social.id] : `${social.pre}${data.contact[social.id]}`)} target="_blank" rel="noreferrer" className="group p-8 rounded-[2rem] bg-gray-50 dark:bg-white/5 border border-transparent hover:border-indigo-500/50 transition-all flex flex-col items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-white dark:bg-gray-800 text-indigo-500 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                    <social.icon size={28} />
+                  </div>
+                  <div className="text-center">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 block">{social.label}</span>
+                    <span className="font-bold text-gray-900 dark:text-white break-all">{data.contact[social.id].includes('http') ? 'Profile' : data.contact[social.id]}</span>
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   );
 }
 
