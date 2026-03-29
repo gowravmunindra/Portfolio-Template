@@ -39,7 +39,7 @@ html.custom-cursor, html.custom-cursor * { cursor: none !important; }
       linear-gradient(160deg, #faf5ff 0%, #f8fafc 55%, #eff6ff 100%);
     background-attachment: fixed;
     min-height: 100vh;
-    transition: background 0.6s ease, color 0.4s ease;
+    transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* ── Dark mode body: deep space blue-black ── */
@@ -135,9 +135,9 @@ html.custom-cursor, html.custom-cursor * { cursor: none !important; }
   /* ── Card lift & glow on hover ── */
   .card-hover {
     transition:
-      transform  0.32s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.32s ease,
-      border-color 0.25s ease;
+      transform  0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.6s ease,
+      border-color 0.5s ease;
   }
   .card-hover:hover {
     transform: translateY(-7px);
@@ -168,7 +168,7 @@ html.custom-cursor, html.custom-cursor * { cursor: none !important; }
     color: #4c1d95;
     cursor: default;
     user-select: none;
-    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 1px 6px rgba(124, 58, 237, 0.1);
     letter-spacing: 0.01em;
   }
@@ -192,7 +192,7 @@ html.custom-cursor, html.custom-cursor * { cursor: none !important; }
     font-size: 0.875rem;
     font-weight: 600;
     color: #64748b;
-    transition: color 200ms ease;
+    transition: color 400ms ease;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
   }
@@ -209,10 +209,10 @@ html.custom-cursor, html.custom-cursor * { cursor: none !important; }
 /* ════════════════════════════════════════════════════════════════════════
    KEYFRAMES
 ═══════════════════════════════════════════════════════════════════════ */
-@keyframes fadeUp    { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp    { from { opacity: 0; transform: translateY(48px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
 @keyframes scaleIn   { from { opacity: 0; transform: scale(0.93); } to { opacity: 1; transform: scale(1); } }
-@keyframes float     { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+@keyframes float     { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
 @keyframes blob-pulse {
   0%, 100% { transform: scale(1)   rotate(0deg);   opacity: 0.65; }
   33%       { transform: scale(1.1) rotate(5deg);   opacity: 0.85; }
@@ -221,11 +221,11 @@ html.custom-cursor, html.custom-cursor * { cursor: none !important; }
 @keyframes shimmer   { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
 @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-.animate-fade-up  { animation: fadeUp   0.7s ease-out forwards; }
-.animate-fade-in  { animation: fadeIn   0.6s ease-out forwards; }
-.animate-scale-in { animation: scaleIn  0.5s ease-out forwards; }
-.animate-float    { animation: float    6s   ease-in-out infinite; }
-.animate-blob     { animation: blob-pulse 9s ease-in-out infinite; }
+.animate-fade-up  { animation: fadeUp   1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-fade-in  { animation: fadeIn   1.0s ease-out forwards; }
+.animate-scale-in { animation: scaleIn  0.8s ease-out forwards; }
+.animate-float    { animation: float    7s   ease-in-out infinite; }
+.animate-blob     { animation: blob-pulse 12s ease-in-out infinite; }
 .animate-spin-slow{ animation: spin-slow 20s linear infinite; }
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -233,18 +233,18 @@ html.custom-cursor, html.custom-cursor * { cursor: none !important; }
 ═══════════════════════════════════════════════════════════════════════ */
 .section-enter {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1), transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(48px);
+  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .section-enter.visible { opacity: 1; transform: translateY(0); }
 
 /* Staggered children within a visible section */
 .stagger-child {
   opacity: 0;
-  transform: translateY(26px);
+  transform: translateY(32px);
   transition:
-    opacity   0.58s cubic-bezier(0.22, 1, 0.36, 1) var(--sd, 0s),
-    transform 0.58s cubic-bezier(0.22, 1, 0.36, 1) var(--sd, 0s);
+    opacity   0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--sd, 0s),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--sd, 0s);
 }
 .section-enter.visible .stagger-child { opacity: 1; transform: translateY(0); }
 
@@ -273,7 +273,7 @@ section#achievements {
 ═══════════════════════════════════════════════════════════════════════ */
 a, button {
   transition-property: color, background-color, border-color, box-shadow, transform, opacity;
-  transition-duration: 200ms;
+  transition-duration: 400ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -324,7 +324,7 @@ input, textarea { font-family: inherit; }
   pointer-events: none;
   z-index: 99997;
   border-radius: 9999px;
-  animation: sparkle-fade 0.7s ease-out forwards;
+  animation: sparkle-fade 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 @keyframes sparkle-fade {
@@ -343,7 +343,7 @@ input, textarea { font-family: inherit; }
   z-index: 99999;
   border-radius: 0 2px 2px 0;
   box-shadow: 0 0 14px rgba(139, 92, 246, 0.8), 0 0 28px rgba(139, 92, 246, 0.35);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
 }
 
 /* ════════════════════════════════════════════════════════════════════════
