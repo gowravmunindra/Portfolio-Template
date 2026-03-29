@@ -57,11 +57,11 @@ const SectionHeader = ({ sectionObj, sectionKey, isEditing, handleChange }) => (
 
 /* ─── Custom Cursor Hook (rAF-based smooth lerp) ────────────────────────── */
 function useCursor() {
-  const dotRef  = useRef(null);
+  const dotRef = useRef(null);
   const ringRef = useRef(null);
-  const mouse   = useRef({ x: -200, y: -200 });
-  const ring    = useRef({ x: -200, y: -200 });
-  const rafId   = useRef(null);
+  const mouse = useRef({ x: -200, y: -200 });
+  const ring = useRef({ x: -200, y: -200 });
+  const rafId = useRef(null);
 
   useEffect(() => {
     // Skip on touch devices
@@ -81,8 +81,8 @@ function useCursor() {
     };
     rafId.current = requestAnimationFrame(tick);
 
-    /* ── Sparkle trail ── */
-    const COLORS = ['#7c3aed', '#a855f7', '#ec4899', '#8b5cf6', '#c084fc'];
+    /* ── Sparkle trail using dynamic CSS variables ── */
+    const COLORS = ['var(--thm-500)', 'var(--thm-400)', 'var(--thm-300)', 'var(--thm-200)', 'var(--thm-100)'];
     let sparkleCounter = 0;
     const spawnSparkle = (x, y) => {
       const el = document.createElement('div');
@@ -90,7 +90,7 @@ function useCursor() {
       const size = 3 + Math.random() * 4;
       Object.assign(el.style, {
         left: `${x + (Math.random() - 0.5) * 18}px`,
-        top:  `${y + (Math.random() - 0.5) * 18}px`,
+        top: `${y + (Math.random() - 0.5) * 18}px`,
         width: `${size}px`,
         height: `${size}px`,
         background: COLORS[Math.floor(Math.random() * COLORS.length)],
@@ -112,7 +112,7 @@ function useCursor() {
 
     /* ── Click state ── */
     const onDown = () => { dotRef.current?.classList.add('clicking'); ringRef.current?.classList.add('clicking'); };
-    const onUp   = () => { dotRef.current?.classList.remove('clicking'); ringRef.current?.classList.remove('clicking'); };
+    const onUp = () => { dotRef.current?.classList.remove('clicking'); ringRef.current?.classList.remove('clicking'); };
 
     /* ── Hover state when over clickable elements ── */
     const addHov = () => { dotRef.current?.classList.add('hovering'); ringRef.current?.classList.add('hovering'); };
@@ -132,14 +132,14 @@ function useCursor() {
 
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mousedown', onDown);
-    window.addEventListener('mouseup',   onUp);
+    window.addEventListener('mouseup', onUp);
 
     return () => {
       cancelAnimationFrame(rafId.current);
       document.documentElement.classList.remove('custom-cursor');
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mousedown', onDown);
-      window.removeEventListener('mouseup',   onUp);
+      window.removeEventListener('mouseup', onUp);
       mo.disconnect();
     };
   }, []);
@@ -175,7 +175,7 @@ function App() {
   const [activeSection, setActiveSection] = useState('hero');
 
   const { dotRef, ringRef } = useCursor();
-  const { barRef, flash }   = useNavProgress();
+  const { barRef, flash } = useNavProgress();
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportThemeChoice, setExportThemeChoice] = useState('dark');
   const [showContactModal, setShowContactModal] = useState(false);
@@ -295,10 +295,7 @@ function App() {
   /* ═══════════════════ RENDER HERO ═══════════════════════════════════════ */
   const renderHero = () => (
     <section className="hero-section min-h-screen flex items-center pt-28 pb-20 relative overflow-hidden" id="hero">
-      {/* Ambient blobs only — no grid */}
-      <div className="absolute top-[-20%] right-[-10%] w-[55%] aspect-square rounded-full bg-violet-500/15 dark:bg-violet-500/10 blur-[140px] animate-blob -z-10" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[45%] aspect-square rounded-full bg-pink-500/12 dark:bg-pink-500/8 blur-[120px] animate-blob delay-700 -z-10" />
-      <div className="absolute top-[30%] left-[40%] w-[30%] aspect-square rounded-full bg-indigo-400/8 dark:bg-indigo-500/5 blur-[100px] animate-blob delay-300 -z-10" />
+      {/* Removed ambient blobs for clean solid background */}
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         {/* Left */}
@@ -317,7 +314,7 @@ function App() {
             <div className="space-y-3 mb-8">
               <p className="text-2xl font-black text-slate-400">I'm</p>
               <InputField value={data.hero.name} onChange={v => handleChange('hero', 'name', v)} className="text-4xl font-black" placeholder="First Name" />
-              <InputField value={data.hero.lastName} onChange={v => handleChange('hero', 'lastName', v)} className="text-4xl font-black" placeholder="Last Name" />
+              <InputField value={data.hero.lastName} onChange={v => handleChange('hero', 'lastName', v)} className="text-4xl font-black linear-gradient from-green-300 to-green-800" placeholder="Last Name" />
             </div>
           ) : (
             <h1 className="text-5xl sm:text-6xl xl:text-7xl font-black mb-6 leading-[1.08] text-indigo-950 dark:text-white">
@@ -403,10 +400,8 @@ function App() {
     <section className="py-24 scroll-mt-20" id="about">
       <div className="max-w-5xl mx-auto px-6 lg:px-10">
         <div className="relative rounded-3xl overflow-hidden glass-card shadow-xl p-10 md:p-16 border border-white/40 dark:border-white/6">
-          {/* Accent stripe + background glow */}
+          {/* Accent stripe */}
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500" />
-          <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-violet-500/5 blur-3xl" />
-          <div className="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-pink-500/5 blur-3xl" />
 
           <div className="relative text-center max-w-3xl mx-auto">
             <SectionLabel>{data.about.title || 'About Me'}</SectionLabel>
@@ -763,22 +758,14 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-white transition-colors duration-500 selection:bg-violet-500/20">
       {/* ── Custom cursor elements ─────────────────────────────────────── */}
-      <div ref={dotRef}  className="cursor-dot" />
+      <div ref={dotRef} className="cursor-dot" />
       <div ref={ringRef} className="cursor-ring" />
 
       {/* ── Nav progress bar ──────────────────────────────────────────── */}
       <div ref={barRef} className="nav-progress-bar" style={{ width: '0%', opacity: 0 }} />
 
-      {/* Page background — layered ambient blobs, no grid */}
-      <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-        {/* Light: vivid violet top-right */}
-        <div className="absolute -top-40 -right-40 w-[800px] h-[800px] rounded-full bg-violet-400/20 dark:bg-violet-600/12 blur-[200px] animate-blob" />
-        {/* Light: rose bottom-left */}
-        <div className="absolute -bottom-40 -left-40 w-[700px] h-[700px] rounded-full bg-pink-400/16 dark:bg-pink-600/10 blur-[180px] animate-blob delay-300" />
-        {/* Center indigo mid-page */}
-        <div className="absolute top-1/2 left-1/4 w-[500px] h-[500px] rounded-full bg-indigo-400/10 dark:bg-indigo-600/8 blur-[150px] animate-blob delay-700" />
-        {/* Dark only: deep purple overlay for richness */}
-        <div className="hidden dark:block absolute top-0 left-0 w-full h-full bg-gradient-to-br from-violet-950/30 via-transparent to-indigo-950/20" />
+      {/* Page background — clean solid background */}
+      <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden bg-slate-50 dark:bg-[#0d1b18]">
       </div>
 
       {/* ── NAV ─────────────────────────────────────────────────────────── */}
@@ -794,16 +781,14 @@ function App() {
               <button
                 key={l.id}
                 onClick={() => scrollTo(l.id)}
-                className={`nav-link group relative px-1 py-1 text-sm font-semibold transition-all duration-200 ${
-                  activeSection === l.id
-                    ? 'text-violet-600 dark:text-violet-400'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
+                className={`nav-link group relative px-1 py-1 text-sm font-semibold transition-all duration-200 ${activeSection === l.id
+                  ? 'text-violet-600 dark:text-violet-400'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
               >
                 {SECTION_NAMES[l.id] || l.id}
-                <span className={`absolute -bottom-0.5 left-0 h-0.5 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-300 ${
-                  activeSection === l.id ? 'w-full' : 'w-0 group-hover:w-full'
-                }`} />
+                <span className={`absolute -bottom-0.5 left-0 h-0.5 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-300 ${activeSection === l.id ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`} />
               </button>
             ))}
           </div>
