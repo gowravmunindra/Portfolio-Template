@@ -7,14 +7,17 @@ export const initialData = {
     rolePrefix: "A",
     role: "Full Stack Developer",
     roleSuffix: "& UI/UX Designer",
-    profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=800&q=80"
+    profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=800&q=80",
+    ctaPrimary: "View My Work",
+    ctaSecondary: "Get in Touch",
   },
   about: {
     title: "About Me",
-    bio: "I am a versatile professional with a passion for continuous learning and adapting across multiple disciplines. My career journey is defined by delivering high-quality results, leading complex projects, and driving meaningful change in dynamic environments."
+    bio: "I am a versatile professional with a passion for continuous learning and adapting across multiple disciplines. My career journey is defined by delivering high-quality results, leading complex projects, and driving meaningful change in dynamic environments.",
   },
   skills: {
     title: "Key Skills",
+    desc: "Technologies and disciplines I work with professionally.",
     items: [
       "Strategic Planning", "Project Management", "Problem Solving", "Cross-functional Leadership",
       "Technical Analysis", "Design Thinking", "Client Relations", "Data-Driven Decisions"
@@ -22,6 +25,7 @@ export const initialData = {
   },
   projects: {
     title: "Works",
+    desc: "A curated selection of my recent work and side projects.",
     items: [
       {
         id: 1,
@@ -34,7 +38,7 @@ export const initialData = {
       },
       {
         id: 2,
-        title: "Brand Strategy overhaul",
+        title: "Brand Strategy Overhaul",
         description: "Developed and executed a comprehensive brand identity system and launch campaign for a disruptive emerging startup.",
         link: "https://example.com/project2",
         codeLink: "https://github.com/alexstark/brand-strategy",
@@ -45,6 +49,7 @@ export const initialData = {
   },
   experience: {
     title: "Experience & Journey",
+    desc: "My professional journey and the impact I've made along the way.",
     items: [
       {
         id: 1,
@@ -66,6 +71,7 @@ export const initialData = {
   },
   achievements: {
     title: "Certifications & Achievements",
+    desc: "Certifications, awards and milestones I'm proud of.",
     items: [
       {
         id: 1,
@@ -87,6 +93,7 @@ export const initialData = {
   },
   contact: {
     title: "Get In Touch",
+    desc: "Open to collaborations, freelance work and exciting opportunities.",
     email: "alex@example.com",
     phone: "+1 (555) 123-4567",
     github: "alexcross",
